@@ -2,19 +2,36 @@
 
 ## 1. Cíl projektu
 
-Cíl je dynamicky porovnávat jednotlivé produkty na několika eshopech najednou v pravidelných intervalech a schopnost dodávat co nejmenší cenu za jendotlivý produkt.
-Úplný cíl je schopnost porovnat ihned jakýkoliv produkt z jakýchkoliv stránek vždy a hned.
-Produkt, který si uživatel označí se průběžně zaznamenává do databáze včetně změn cen a dostupnosti, uživatel bude mít přístup k algoritmu, který pozná v jakém intervalu se produkt zlevňuje/zdražuje
+### Vize (dlouhodobě)
+
+Porovnávat ceny stejného produktu napříč e-shopy (včetně dopravy a variant),
+najít nejlevnější nabídku a předpovídat, kdy produkt zlevňuje.
+
+### Cíl MVP
+
+Sledovat cenu konkrétních produktů v čase, ukládat historii ceny a dostupnosti
+a upozornit uživatele, když cena klesne pod zvolenou hranici.
 
 ## 2. Rozsah MVP
 
 ### V MVP
 
-testing proběhne na 2 stránkách vytvořených pro scraping(jedna je v librách)
+- Přidání produktu podle URL a jeho odebrání ze sledování
+- Pravidelné stahování ceny a dostupnosti (worker)
+- Ukládání historie cen
+- Nastavení cílové ceny; upozornění zatím jen zápisem do logu
+- API: výpis produktů, historie cen, statistiky (min, max, poslední cena)
+- Zdroje: books.toscrape.com a webscraper.io (tréninkové weby)
 
 ### Mimo MVP (později)
 
--Program bude moct zobrazit jakýkoliv produkt bude chtít, stačí když zadá stránku, aktuální cenu a název produktu a algoritmus si produkt zapamatuje a bude stránku scrapovat dokud uživatel proces nezastaví
+- Upozornění přes Telegram (případně WhatsApp)
+- Analýza historie: v jakých intervalech produkt zlevňuje (Pandas)
+- Vlastní falešný e-shop s měnícími se cenami (pro testování)
+- Skutečné e-shopy
+- Porovnání stejného produktu napříč e-shopy (product matching)
+- Varianty produktu a cena dopravy
+- Uživatelské účty a přihlášení
 
 ## 3. User stories
 
@@ -23,6 +40,7 @@ Uživatel bude mít přístup si hned vybrat nejlevnější produkt na trhu, zá
 1. Jako uživatel chci přidat produkt podle URL, abych začal sledovat jeho cenu.
 2. Uživatel bude dostávat upozornění, tam kde je cena nejlevnější
 3. Uživatel bude dostávat upozornění, tam kde je cena produktu, který si vybere nejlevnější, zároveň dostane srovnání mezi eshopy včetně dopravy
+4. Uživatel si nastaví cílovou cenu a dostane upozornění, když se cena setká s jeho cílovou cenou
 
 ## 4. Doménový model
 
@@ -40,24 +58,27 @@ Uživatel bude mít přístup si hned vybrat nejlevnější produkt na trhu, zá
 
 | Pole       | Typ     | Popis                            |
 | ---------- | ------- | -------------------------------- |
-| id         | int     | cena produktu                    |
+| id         | int     | id ceny                          |
+| price      | int     | cena produktu                    |
 | product_id | id      | ke kterému produktu se cena váže |
-| on_stock   | boolean | je produkt na skladě?            |
+| date       | date    | čas, kdy byla cena scrapnuta     |
+| in_stock   | boolean | je produkt na skladě?            |
+| currency   | str     | měna                             |
+| scraped_at | str     | webovka, kde se produkt našel    |
 
 ### Watch
 
-| Pole       | Typ     | Popis                                                                 |
-| ---------- | ------- | --------------------------------------------------------------------- |
-| product_id | Int     | K jakému productu se pricewatch váže?                                 |
-| watch_on   | Booelan | Běží hlídaní ceny?                                                    |
-| price_set  | Int     | Když se sníží cena daného produktu, tak se pošle uživateli upozornění |
+| Pole          | Typ     | Popis                                                                 |
+| ------------- | ------- | --------------------------------------------------------------------- |
+| id            | Int     | ID jednoho watche ceny                                                |
+| product_id    | Int     | K jakému productu se pricewatch váže?                                 |
+| is_active     | Booelan | Běží hlídaní ceny?                                                    |
+| target_price  | Int     | Když se sníží cena daného produktu, tak se pošle uživateli upozornění |
+| last_notified | Date    | Poslední upozornění                                                   |
 
 ### Rozhodnutí
 
-> Proč je model navržený takhle. Ke každé změně oproti návrhu z Fáze 1
-> napiš jednu větu proč. Sem patří i odpověď na otázku s měnami (£ vs Kč).
-
-- [...]
+- Až si bude uživatle vybírat stránku a produkt, který tam chce sledovat, vybere si i měnu v jaké se produkt kupuje(default tam bude KČ)
 
 ## 5. Analýza zdrojů
 

@@ -46,13 +46,14 @@ Uživatel bude mít přístup si hned vybrat nejlevnější produkt na trhu, zá
 
 ### Product
 
-| Pole        | Typ  | Popis                                     |
-| ----------- | ---- | ----------------------------------------- |
-| id          | int  | primární klíč                             |
-| url         | str  | unikátní                                  |
-| name        | str  | název produktu                            |
-| external_id | str  | id pruduktu na jedné stránce(může chybět) |
-| created_at  | date | čas, kdy uživatel začne sledovat produkt  |
+| Pole        | Typ  | Popis                                    |
+| ----------- | ---- | ---------------------------------------- | ----------------------------------------- |
+| id          | int  | primární klíč                            |
+| url         | str  | unikátní                                 |
+| name        | str  | název produktu                           |
+| external_id | str  | None                                     | id pruduktu na jedné stránce(může chybět) |
+| created_at  | date | čas, kdy uživatel začne sledovat produkt |
+| currency    | str  | měna                                     |
 
 ### PricePoint
 
@@ -61,10 +62,8 @@ Uživatel bude mít přístup si hned vybrat nejlevnější produkt na trhu, zá
 | id         | int     | id ceny                          |
 | price      | int     | cena produktu                    |
 | product_id | id      | ke kterému produktu se cena váže |
-| date       | date    | čas, kdy byla cena scrapnuta     |
 | in_stock   | boolean | je produkt na skladě?            |
-| currency   | str     | měna                             |
-| scraped_at | str     | webovka, kde se produkt našel    |
+| scraped_at | date    | kdy byla cena stažena            |
 
 ### Watch
 
@@ -79,6 +78,8 @@ Uživatel bude mít přístup si hned vybrat nejlevnější produkt na trhu, zá
 ### Rozhodnutí
 
 - Až si bude uživatle vybírat stránku a produkt, který tam chce sledovat, vybere si i měnu v jaké se produkt kupuje(default tam bude KČ)
+- Cílová cena bude vždy v měně produktu
+  -Scraper se bude vybírat podle URL domény
 
 ## 5. Analýza zdrojů
 

@@ -1,0 +1,43 @@
+[project]
+name = "price-taker"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+price-taker = "price_taker:main"
+
+[build-system]
+requires = ["uv_build>=0.11.21,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.0",
+    "pytest>=9.1.1",
+    "ruff>=0.17.1",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle: základní styl
+    "F",        # pyflakes: nepoužité importy, nedefinované proměnné
+    "I",        # isort: řazení importů
+    "B",        # bugbear: časté chyby a pasti
+    "UP",       # pyupgrade: moderní syntaxe Pythonu
+    "SIM",      # zjednodušení kódu
+    "RUF",      # ruff-specifická pravidla
+]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--import-mode=importlib"]

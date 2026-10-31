@@ -31,5 +31,5 @@ def parse_price(raw: str) -> tuple[Decimal, str]:
                 raise PriceParseError(f"Chyba: v textu se nenašel cena ani symbol{raw}") from exc
 
             return amount, code
-
+            
     raise PriceParseError(f"Neznámá měna v textu: {raw!r}")
